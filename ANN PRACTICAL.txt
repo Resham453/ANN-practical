@@ -1,0 +1,298 @@
+prac 1
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+import numpy as np 
+plt.style.use('seaborn') 
+plt.figure(figsize=(8,4))
+def SigmoidBinary(t): 
+	return 1/(1+np.exp(-t)) 
+t = np.linspace(-5, 5) 
+plt.plot(t, SigmoidBinary(t)) 
+plt.title('Binary Sigmoid Activation Function') 
+plt.show() 
+
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+import numpy as np
+ plt.style.use('seaborn') 
+plt.figure(figsize=(8,4)) 
+def HyperbolicTan(t):
+ return np.tanh(t) 
+t = np.linspace(-5, 5) 
+plt.plot(t, HyperbolicTan(t)) 
+plt.title('Hyperbolic Tan Activation Function')
+plt.show() 
+
+
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+import numpy as np  plt.style.use('seaborn') 
+ plt.figure(figsize=(8,4)) 
+def softmax(t): 
+ 	return np.exp(t) / np.sum(np.exp(t)) 
+t = np.linspace(-5, 5)
+ plt.plot(t, Softmax(t)) 
+plt.title('Softmax Activation Function')
+ plt.show() 
+
+
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+ def relu(x): 
+ 	 return np.maximum(0, x) 
+x = np.linspace(-10, 10, 100) y = relu(x)  
+plt.figure(figsize=(8, 6)) 
+plt.plot(x, y, color='blue') 
+plt.title('ReLU Function') 
+plt.xlabel('Input') 
+plt.ylabel('Output')  
+plt.axhline(0, color='black', linewidth=0.5, linestyle='--') # Add x-a 
+plt.axvline(0, color='black', linewidth=0.5, linestyle='--') # Add y-a 
+plt.legend()  
+plt.grid(True) 
+plt.show()
+
+
+
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+def leaky_relu(x, alpha=0.01): 
+         return np.where(x > 0, x, alpha * x) 
+x = np.linspace(-10, 10, 100) 
+y = leaky_relu(x) 
+plt.figure(figsize=(8, 6)) 
+plt.plot(x, y, color='blue') 
+plt.title('Leaky ReLU Function') 
+plt.xlabel('Input') 
+plt.ylabel('Output') 
+plt.axhline(0, color='black', linewidth=0.5, linestyle='--') # Add x-a 
+plt.axvline(0, color='black', linewidth=0.5, linestyle='--') # Add y-a 
+plt.legend() 
+plt.grid(True)
+plt.show()
+
+
+
+
+prac 2
+
+import numpy as np
+
+#np.random.seed(0)
+def sigmoid (x):
+   return 1/(1 + np.exp(-x))
+def sigmoid_derivative(x):
+   return x * (1 - x)
+
+#Input datasets
+inputs = np.array([[0,0],[0,1],[1,0],[1,1]])
+expected_output = np.array([[0],[1],[1],[0]])
+epochs = 10000
+lr = 0.1
+inputLayerNeurons, hiddenLayerNeurons, outputLayerNeurons = 2,2,1
+
+#Random weights and bias initialization
+hidden_weights = np.random.uniform(size=(inputLayerNeurons,hiddenLayerNeurons))
+hidden_bias =np.random.uniform(size=(1,hiddenLayerNeurons))
+output_weights = np.random.uniform(size=(hiddenLayerNeurons,outputLayerNeurons))
+output_bias = np.random.uniform(size=(1,outputLayerNeurons))
+
+print("Initial hidden weights: ",end='')
+print(*hidden_weights)
+print("Initial hidden biases: ",end='')
+print(*hidden_bias)
+print("Initial output weights: ",end='')
+print(*output_weights)
+print("Initial output biases: ",end='')
+print(*output_bias)
+
+#Training algorithm
+for _ in range(epochs):
+#Forward Propagation
+hidden_layer_activation = np.dot(inputs,hidden_weights)
+hidden_layer_activation += hidden_bias
+hidden_layer_output = sigmoid(hidden_layer_activation)
+output_layer_activation = np.
+dot(hidden_layer_output,output_weights)
+output_layer_activation += output_bias
+predicted_output = sigmoid(output_layer_activation)
+
+
+#Backpropagation
+error = expected_output - predicted_output
+d_predicted_output = error * sigmoid_derivative(predicted_output)
+error_hidden_layer = d_predicted_output.dot(output_weights.T)
+d_hidden_layer = error_hidden_layer * sigmoid_derivative(hidden_layer_output)
+
+#Updating Weights and Biases
+output_weights += hidden_layer_output.T.dot(d_predicted_output) * lr
+output_bias += np.sum(d_predicted_output,axis=0,keepdims=True) * lr
+hidden_weights += inputs.T.dot(d_hidden_layer) * lr
+hidden_bias += np.sum(d_hidden_layer,axis=0,keepdims=True) * lr
+
+print("Final hidden weights: ",end='')
+print(*hidden_weights)
+print("Final hidden bias: ",end='')
+print(*hidden_bias)
+print("Final output weights: ",end='')
+print(*output_weights)
+print("Final output bias: ",end='')
+print(*output_bias)
+print("\nOutput from neural network after 10,000 epochs: ",end='')
+print(*predicted_output)
+
+
+
+-
+
+# Perceptron Algorithm on the Sonar Dataset
+from random import seed
+from random import randrange
+from csv import reader
+ 
+# Load a CSV file
+def load_csv(filename):
+ dataset = list()
+ with open(filename, 'r') as file:
+ csv_reader = reader(file)
+ for row in csv_reader:
+ if not row:
+ continue
+ dataset.append(row)
+ return dataset
+ 
+# Convert string column to float
+def str_column_to_float(dataset, column):
+ for row in dataset:
+ row[column] = float(row[column].strip())
+ 
+# Convert string column to integer
+def str_column_to_int(dataset, column):
+ class_values = [row[column] for row in dataset]
+ unique = set(class_values)
+ lookup = dict()
+ for i, value in enumerate(unique):
+ lookup[value] = i
+ for row in dataset:
+ row[column] = lookup[row[column]]
+ return lookup
+ 
+# Split a dataset into k folds
+def cross_validation_split(dataset, n_folds):
+ dataset_split = list()
+ dataset_copy = list(dataset)
+ fold_size = int(len(dataset) / n_folds)
+ for i in range(n_folds):
+ fold = list()
+ while len(fold) < fold_size:
+ index = randrange(len(dataset_copy))
+ fold.append(dataset_copy.pop(index))
+ dataset_split.append(fold)
+ return dataset_split
+ 
+# Calculate accuracy percentage
+def accuracy_metric(actual, predicted):
+ correct = 0
+ for i in range(len(actual)):
+ if actual[i] == predicted[i]:
+ correct += 1
+ return correct / float(len(actual)) * 100.0
+ 
+# Evaluate an algorithm using a cross validation split
+def evaluate_algorithm(dataset, algorithm, n_folds, *args):
+ folds = cross_validation_split(dataset, n_folds)
+ scores = list()
+ for fold in folds:
+ train_set = list(folds)
+ train_set.remove(fold)
+ train_set = sum(train_set, [])
+ test_set = list()
+ for row in fold:
+ row_copy = list(row)
+ test_set.append(row_copy)
+ row_copy[-1] = None
+ predicted = algorithm(train_set, test_set, *args)
+ actual = [row[-1] for row in fold]
+ accuracy = accuracy_metric(actual, predicted)
+ scores.append(accuracy)
+ return scores
+ 
+# Make a prediction with weights
+def predict(row, weights):
+ activation = weights[0]
+ for i in range(len(row)-1):
+ activation += weights[i + 1] * row[i]
+ return 1.0 if activation >= 0.0 else 0.0
+ 
+# Estimate Perceptron weights using stochastic gradient descent
+def train_weights(train, l_rate, n_epoch):
+ weights = [0.0 for i in range(len(train[0]))]
+ for epoch in range(n_epoch):
+ for row in train:
+ prediction = predict(row, weights)
+ error = row[-1] - prediction
+ weights[0] = weights[0] + l_rate * error
+ for i in range(len(row)-1):
+ weights[i + 1] = weights[i + 1] + l_rate * error * row[i]
+ return weights
+ 
+# Perceptron Algorithm With Stochastic Gradient Descent
+def perceptron(train, test, l_rate, n_epoch):
+ predictions = list()
+ weights = train_weights(train, l_rate, n_epoch)
+ for row in test:
+ prediction = predict(row, weights)
+ predictions.append(prediction)
+ return(predictions)
+ 
+# Test the Perceptron algorithm on the sonar dataset
+seed(1)
+# load and prepare data
+filename = 'sonar.all-data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])-1):
+ str_column_to_float(dataset, i)
+# convert string class to integers
+str_column_to_int(dataset, len(dataset[0])-1)
+# evaluate algorithm
+n_folds = 3
+l_rate = 0.01
+n_epoch = 500
+scores = evaluate_algorithm(dataset, perceptron, n_folds, l_rate, n_epoch)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+
+
+
+
+
+prac 4
+
+import numpy as np
+import ARTFunctions as art
+
+# Magic Numbers -> %80 #
+similarity_coefficient = 0.8
+# M1, M2, M3 and P1,P2 and P3 values #
+dataset = np.array([ 
+[1,0,1],
+[1,1,0],
+[0,0,1] ])
+inputN,outputM = art.numberOfRowsAndColumns(dataset)
+
+backwardWeight = art.initialForwardDirectionWeightMatrix(inputN,outputM)
+forwardWeight = backwardWeight * art.initialForwardDirectionWeightFormula(input)
+
+for i in range(inputN):
+YList = art.calculateYList(inputN,dataset[i],forwardWeight) 
+maxYP = art.maxYListInValue(YList)
+PS1 = art.fitnessTestS1(dataset[i])
+newBackwardWeight, newForwardWeight = art.fitnessTestS2(inputN, backwardWeig 
+print("New Backward Weight : ", newBackwardWeight)
+print("New Forward Weight : ", newForwardWeight)
+
